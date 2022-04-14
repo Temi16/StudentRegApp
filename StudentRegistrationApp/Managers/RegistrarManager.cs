@@ -55,11 +55,8 @@ namespace StudentRegistrationApp.Managers
 
         }
 
-        public Registrar GetRegistrarById()
+        public Registrar GetRegistrarById(int id)
         {
-            Console.Write("Enter the id of Registrar to find: ");
-            var id = int.Parse(Console.ReadLine());
-
             Registrar registrar = null;
             try
             {
@@ -87,6 +84,125 @@ namespace StudentRegistrationApp.Managers
             }
             _connection.Close();
             return registrar;
+        }
+
+        public Registrar GetRegistrarByEmail(string staffEmail)
+        {
+            Registrar registrar = null;
+            try
+            {
+                _connection.Open();
+                string query = "select * from registrars where email = '" + staffEmail + "'";
+                MySqlCommand command = new MySqlCommand(query, _connection);
+                MySqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    int id = reader.GetInt32(0);
+                    string staffNo = reader.GetString(1);
+                    string firstName = reader.GetString(2);
+                    var lastName = reader.GetString(3);
+                    var email = reader.GetString(4);
+                    var password = reader.GetString(5);
+                    var address = reader.GetString(6);
+                    var phone = reader.GetString(7);
+
+                    registrar = new Registrar(id, firstName, lastName, address, phone, email, password, staffNo);
+
+                }
+            }
+            catch (MySqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            _connection.Close();
+            return registrar;
+        }
+
+        public void UpdateRegistrar()
+        {
+            Console.Write("Please, enter the Id of Registrar to update");
+            int id = int.Parse(Console.ReadLine());
+            var registrar = GetRegistrarById(id);
+            if(registrar != null)
+            {
+                Console.Write("Enter registrar first name: ");
+                var firstName = Console.ReadLine();
+                Console.Write("Enter registrar last name: ");
+                var lastName = Console.ReadLine();
+                Console.Write("Enter registrar phone number: ");
+                var phone = Console.ReadLine();
+                Console.Write("Enter registrar address: ");
+                var address = Console.ReadLine();
+
+                try
+                {
+                    _connection.Open();
+                    string query = "update registrars set first_name = '" + firstName + "', last_name = '" + lastName + "', phone_number = '" + phone + "', address = '" + address + "'where id = '"+id+"'";
+
+                    MySqlCommand command = new MySqlCommand(query, _connection);
+                    int count = command.ExecuteNonQuery();
+                    if (count > 0)
+                    {
+                        _connection.Close();
+                        Console.WriteLine("Registrar added successfully.");
+                    }
+                    
+                }
+                catch (MySqlException ex)
+                {
+                    Console.WriteLine("Failed to update registrar.");
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid registrar id.");
+            }
+        }
+
+        public void DeleteRegistrar()
+        {
+            Console.Write("Please, enter the Id of Registrar to delete");
+            int id = int.Parse(Console.ReadLine());
+            var registrar = GetRegistrarById(id);
+            if (registrar != null)
+            {
+                Console.Write($"Are you sure you want to delete this registrar: {registrar.FirstName} {registrar.LastName}");
+                Console.Write("Enter \"Y\" for Yes and \"N\" for No: ");
+                var op = Console.ReadLine();
+                if(op.ToUpper().Equals("Y"))
+                {
+                    try
+                    {
+                        _connection.Open();
+                        string query = "delete from registrars where id = '" + id + "'";
+
+                        MySqlCommand command = new MySqlCommand(query, _connection);
+                        int count = command.ExecuteNonQuery();
+                        if (count > 0)
+                        {
+                            _connection.Close();
+                            Console.WriteLine("Registrar deleted successfully.");
+                        }
+
+                    }
+                    catch (MySqlException ex)
+                    {
+                        Console.WriteLine("Failed delete registrar.");
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("You cancil the delete process");
+                }
+                
+            }
+            else
+            {
+                Console.WriteLine("Invalid registrar id.");
+            }
         }
 
         public List<Registrar> GetAllRegistrars()
