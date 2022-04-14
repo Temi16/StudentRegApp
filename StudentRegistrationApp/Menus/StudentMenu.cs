@@ -31,7 +31,10 @@ namespace StudentRegistrationApp.Menus
                     switch (op)
                     {
                         case 1:
-                           
+                            
+                            break;
+                        case 2:
+
                             break;
                         case 0:
                             exit = true;
@@ -53,6 +56,7 @@ namespace StudentRegistrationApp.Menus
             Console.WriteLine("=========================================");
             Console.WriteLine();
             Console.WriteLine("1.\tLogin.");
+            Console.WriteLine("2.\tRegister.");
             Console.WriteLine("0.\tExit.");
         }
     }
