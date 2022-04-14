@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using StudentRegistrationApp.Entities;
+using StudentRegistrationApp.Interfaces;
 
 namespace StudentRegistrationApp.Managers
 {
-    public class RegistrarManager
+    public class RegistrarManager:IRegistrarManager
     {
         MySqlConnection _connection;
 
