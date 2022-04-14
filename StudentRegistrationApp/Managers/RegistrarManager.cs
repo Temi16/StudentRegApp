@@ -17,6 +17,21 @@ namespace StudentRegistrationApp.Managers
             _connection = connection;
         }
 
+        public Registrar Login()
+        {
+            Console.Write("Enter your email: ");
+            var email = Console.ReadLine();
+            Console.Write("Enter your password: ");
+            var password = Console.ReadLine();
+            var registrar = GetRegistrarByEmail(email);
+            if(registrar != null && registrar.Password.Equals(password))
+            {
+                return registrar;
+            }
+            
+            return null;
+        }
+
         public void AddNewRegistrar()
         {
             Console.Write("Enter registrar first name: ");
@@ -121,7 +136,7 @@ namespace StudentRegistrationApp.Managers
 
         public void UpdateRegistrar()
         {
-            Console.Write("Please, enter the Id of Registrar to update");
+            Console.Write("Please, enter the Id of Registrar to update: ");
             int id = int.Parse(Console.ReadLine());
             var registrar = GetRegistrarById(id);
             if(registrar != null)
@@ -145,7 +160,7 @@ namespace StudentRegistrationApp.Managers
                     if (count > 0)
                     {
                         _connection.Close();
-                        Console.WriteLine("Registrar added successfully.");
+                        Console.WriteLine("Registrar updated successfully.");
                     }
                     
                 }
